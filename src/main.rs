@@ -1,16 +1,19 @@
 //following guide https://blog.scottlogic.com/2020/10/08/lets-build-snake-with-rust.html
-use crate::directin::Direction;
-use crate:point::Point;
+//we're going to error out up here for some reason?
+//unresolved import 'crate::direction::Direction;
+
+use crate::direction::Direction;
+use crate::point::Point;
 
 fn main() {
+    //use crate::direction::Direction;
+    //use crate::point::Point;
     pub enum Direction {
         Up,
         Right,
         Down,
         Left
     }
-
-    use crate::direction::Direction;
 
     pub enum Command{
         Quit,
@@ -29,7 +32,7 @@ fn main() {
             Self {x, y}
         }
 
-        pub fn transform(&self, direction: Direction, times: u16) -> self{
+        pub fn transform(&self, direction: Direction, times: u16) -> Self{
             let times = times as i16;
             let transformation = match direction {
                 Direction::Up => (0, -times),
@@ -49,16 +52,17 @@ fn main() {
             if by.is_negative() && by.abs() as u16 > value {
                 panic!("Transforming vaue {} by {} would result in a negative number", value, by);
             } else{
-                //????????? what the hell is going on in this language man
+                //????????? what is going on in this language man
                 (value as i16 + by) as u16
             }
         }
 
     }
+    //error out here this could be an issue
 
     let point = Point { x: 1, y: 2};
 
-    return Point { x: x, y: y }; 
+    //return Point { x: x, y: y }; 
 
 
     let a = Point::new(1,2);
@@ -77,12 +81,22 @@ fn main() {
         digesting: bool,
     }
 
+    //err here
+    //read out what's going on in here
     impl Snake {
-        pub fn new(start: Point, length: u16, direction: Direction) -> {
+        //creating a new instance of the snake struct
+        pub fn new(start: Point, length: u16, direction: Direction) -> Self{
+
+            //calling the opposite method, this returns the opposite value of the current one (I.E LEFT = RIGHT)
             let opposite = direction.opposite();
-            //??
+
+            //(0..length) creteas std::ops::Range, representing 0 - length
+            // going over the full vector of body. So the range of the list?
             let body: Vec<Point> = (0..length)
+            //.into allows us to iterate over the range
                 .into_iter()
+                //.map creates std::iter::Map, allows us to apply a transformation to the u16 value.
+                //makes the 
                 .map(|i| start.transform(opposite, i ))
                 .collect();
 
@@ -90,6 +104,8 @@ fn main() {
             Self { body, direction, digesting: false}    
         }
     }
+
+
 
 
 }
