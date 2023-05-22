@@ -81,7 +81,6 @@ fn main() {
         pub fn new(start: Point, length: u16, direction: Direction) -> {
             let opposite = direction.opposite();
             //??
-            //update 
             let body: Vec<Point> = (0..length)
                 .into_iter()
                 .map(|i| start.transform(opposite, i ))
