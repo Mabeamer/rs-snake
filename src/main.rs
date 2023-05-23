@@ -1,9 +1,12 @@
 //following guide https://blog.scottlogic.com/2020/10/08/lets-build-snake-with-rust.html
 //we're going to error out up here for some reason?
 //unresolved import 'crate::direction::Direction;
-
-use crate::direction::Direction;
+use crate::snake::Snake;
 use crate::point::Point;
+use crate::direction::Direction;
+
+
+
 
 fn main() {
     //use crate::direction::Direction;
@@ -32,6 +35,7 @@ fn main() {
             Self {x, y}
         }
 
+        //need a better understanding of this function
         pub fn transform(&self, direction: Direction, times: u16) -> Self{
             let times = times as i16;
             let transformation = match direction {
@@ -90,22 +94,87 @@ fn main() {
             //calling the opposite method, this returns the opposite value of the current one (I.E LEFT = RIGHT)
             let opposite = direction.opposite();
 
+            //let this sink in
+
             //(0..length) creteas std::ops::Range, representing 0 - length
             // going over the full vector of body. So the range of the list?
             let body: Vec<Point> = (0..length)
             //.into allows us to iterate over the range
                 .into_iter()
                 //.map creates std::iter::Map, allows us to apply a transformation to the u16 value.
-                //makes the 
+                //makes the iterator mutatable (?)
+                //uses start transform to return a new point for every I, 
                 .map(|i| start.transform(opposite, i ))
+                //collect executes the operation and brings the resulte of vec of type Point representing the body of the snake
                 .collect();
 
-
+            //passing in the new direction and setting the base digestion of false
             Self { body, direction, digesting: false}    
+        }
+
+        //what is going on here man
+        //update: are we grabbing the direct values above?
+        //udate no2: getters and setters for building our function, need to learn how to think about this on my own.
+
+        //returns the first Point of the body field, this is the head of the snake.
+        pub fn get_head_point(&self) -> Point {
+            //"the firss method returns an Option<&Point> || Represents either Some or None" ?????????
+            //rust does not have a concept of null so it uses Option to represent null
+            //this is referencing a value within the vector
+            self.body.first().unwrap().clone()
+
+        }
+
+        //returns a clone of the first point of the body field that represents the head of the snake
+        pub fn get_body_points(&self) -> Vec<Point>{
+            self.body.clone()   
+        }
+        //returns a clone of the direction field
+        pub fn get_direction(&self) -> Direction {
+            self.direction.clone()
+        }
+        //this is the check to see if the snakes body part contains a point
+        pub fn contains_point(&self, point: &Point) -> bool {
+            self.body.contains(point)
+        }
+
+
+
+        //using mut to access and change the snake itself
+        pub fn slither(&mut self){
+            //this looks to be the important statement to learn
+            self.body.insert(0, self.body.first().unwrap().transform(self.direction, 1));
+            //if it is digesting it removes one from its head
+            if !self.digesting{
+                self.body.remove(self.body.len()-1);
+            }else{
+                self.digesting = false;
+            }
+
+        }
+        //updates the direction field with the current direction
+        pub fn set_direction(&mut self, direction: Direction){
+            self.direction = direction;
+        }
+        //setting digesting to true
+        pub fn grow(&mut self){
+            self.digesting = true;
+        }
+
+    }
+
+    //??
+    impl Direction{
+        pub fn opposite(&self) -> Self {
+            match self{
+                Self::Up => Self::Down,
+                Self::Right => Self::Left,
+                Self::Down => Self::Up,
+                Self::Left => Self::Right,
+            }
         }
     }
 
-
-
+    
 
 }
